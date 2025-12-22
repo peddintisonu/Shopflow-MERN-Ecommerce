@@ -7,3 +7,9 @@ export const ENV = {
     NODE_ENV: process.env.NODE_ENV || "DEVELOPMENT",
     MONGO_URI: process.env.MONGO_URI,
 };
+
+if (!ENV.MONGO_URI) {
+    throw new Error(
+        "❌ MONGO_URI is required but not defined in environment variables"
+    );
+}

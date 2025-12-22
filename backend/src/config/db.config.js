@@ -9,5 +9,6 @@ export const connectDB = async (MONGO_URI) => {
         );
     } catch (error) {
         console.log("💥 MONGODB CONNECTION FAILED: ", error.message);
+        throw error;
     }
 };
