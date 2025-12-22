@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+// Note: Intentionally duplicated from cart.model.js to decouple the Order schema
+// from the Cart schema. The Order represents a historical snapshot and should not be
+// affected by future changes to the Cart's structure.
 const itemOptionSchema = new mongoose.Schema(
     {
         key: { type: String, required: true },
@@ -101,7 +104,15 @@ const orderSchema = new mongoose.Schema(
             required: true,
         },
 
-        orderItems: [orderItemSchema],
+        orderItems: {
+            type: [orderItemSchema],
+            validate: {
+                validator: function (items) {
+                    return items && items.length > 0;
+                },
+                message: "Order must contain at least one item",
+            },
+        },
 
         shippingAddress: {
             type: shippingAddressSchema,
@@ -168,5 +179,9 @@ const orderSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+orderSchema.index({ customer: 1, createdAt: -1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ "paymentInfo.status": 1 });
 
 export const Order = mongoose.model("Order", orderSchema);

@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-import { ENV } from "../config/env.config.js";
 import { DB_CONSTANTS } from "../../constants.js";
+import { ENV } from "../config/env.config.js";
 
 export const hashPassword = async (password) => {
     return await bcrypt.hash(password, 10);

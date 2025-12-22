@@ -1,4 +1,6 @@
+import { isValidPhoneNumber } from "libphonenumber-js";
 import mongoose from "mongoose";
+
 import { DB_CONSTANTS } from "../../constants.js";
 import {
     comparePassword,
@@ -15,10 +17,13 @@ const addressSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        match: [
-            /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im,
-            "Please enter a valid phone number",
-        ],
+        validate: {
+            // The validator function
+            validator: function (v) {
+                return isValidPhoneNumber(v, this.country);
+            },
+            message: (props) => `${props.value} is not a valid phone number!`,
+        },
     },
     flatNumber: { type: String, required: true, trim: true },
     addressLane1: { type: String, required: true, trim: true },
