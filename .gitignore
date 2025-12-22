@@ -1,0 +1,26 @@
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+build/
+.cache/
+.vite/
+
+# Environment files
+.env
+.env.*
+!**/.env.example
+
+# Logs & Debug
+*.log
+npm-debug.log*
+
+# Misc / OS
+.DS_Store
+Thumbs.db
+
+# VSCode (Keep settings, ignore state)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
