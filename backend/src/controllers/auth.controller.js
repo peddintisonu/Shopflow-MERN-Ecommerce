@@ -74,9 +74,12 @@ export const loginUser = async (req, res) => {
         $or: [{ username: identifier }, { email: identifier }],
     });
 
-    const isPasswordValid = await user.isPasswordCorrect(password);
+    if (!user) {
+        throw new ApiError(401, "Invalid Credentials");
+    }
 
-    if (!user || !isPasswordValid) {
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    if (!isPasswordValid) {
         throw new ApiError(401, "Invalid Credentials");
     }
 

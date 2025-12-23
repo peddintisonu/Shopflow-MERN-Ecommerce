@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { axiosInstance } from "../api/axios";
 import AuthContext from "./AuthContext.js"; // Import the context
 
@@ -12,7 +12,6 @@ const AuthProvider = ({ children }) => {
             try {
                 const response = await axiosInstance.get("/users/me");
                 if (response.data && response.status === 200) {
-                    
                     setUser(response.data.data);
                     setIsAuthenticated(true);
                 }
@@ -27,7 +26,7 @@ const AuthProvider = ({ children }) => {
         checkAuthStatus();
     }, []);
 
-    const login = async (identifier, password) => {
+    const login = useCallback(async (identifier, password) => {
         try {
             const response = await axiosInstance.post("/auth/login", {
                 identifier,
@@ -41,9 +40,9 @@ const AuthProvider = ({ children }) => {
             console.error("Login failed:", error);
             throw error;
         }
-    };
+    }, []);
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
         try {
             await axiosInstance.post("/auth/logout");
         } catch (error) {
@@ -52,11 +51,11 @@ const AuthProvider = ({ children }) => {
             setUser(null);
             setIsAuthenticated(false);
         }
-    };
+    }, []);
 
     const contextValue = useMemo(
         () => ({ user, isAuthenticated, loading, login, logout }),
-        [user, isAuthenticated, loading]
+        [user, isAuthenticated, loading, login, logout]
     );
 
     return (

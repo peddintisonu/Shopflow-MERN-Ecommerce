@@ -28,7 +28,7 @@ const fileFilter = (req, file, cb) => {
         cb(
             new ApiError(
                 400,
-                "Unsupported file format. Only JPEG, PNG, and JPG are allowed."
+                "Unsupported file format. Only JPEG, PNG, WEBP and JPG are allowed."
             ),
             false
         );

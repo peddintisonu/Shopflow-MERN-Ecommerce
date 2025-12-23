@@ -32,7 +32,7 @@ export const AVAILABLE_PRODUCT_STATUSES = Object.values(ProductStatusEnum);
 // Cookie Options
 export const COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // In production, secure will be true
+    secure: process.env.NODE_ENV?.toLowerCase() === "production", // In production, secure will be true
     sameSite: "lax",
 };
 

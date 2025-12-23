@@ -39,14 +39,12 @@ const SignUp = () => {
         }
 
         try {
-            await axiosInstance.post("/auth/register", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
+            await axiosInstance.post("/auth/register", data);
             navigate("/signin");
         } catch (err) {
-            console.error("Full Axios Error:", err);
+            if (import.meta.env.DEV) {
+                console.error("Full Axios Error:", err);
+            }
             setError(
                 err.response?.data?.message ||
                     "Registration failed. Please try again."

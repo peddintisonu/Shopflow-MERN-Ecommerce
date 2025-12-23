@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const SignIn = () => {
@@ -9,6 +9,7 @@ const SignIn = () => {
     const [error, setError] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,7 +17,8 @@ const SignIn = () => {
         setLoading(true);
         try {
             await login(email, password);
-            navigate("/profile");
+            const from = location.state?.from?.pathname || "/profile";
+            navigate(from, { replace: true });
         } catch (err) {
             setError(
                 err.response?.data?.message ||

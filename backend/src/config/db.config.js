@@ -4,7 +4,9 @@ import { ENV } from "./env.config.js";
 export const connectDB = async () => {
     try {
         const dbName =
-            ENV.NODE_ENV === "production" ? ENV.DB_NAME_PROD : ENV.DB_NAME_DEV;
+            ENV.NODE_ENV?.toLowerCase() === "production"
+                ? ENV.DB_NAME_PROD
+                : ENV.DB_NAME_DEV;
 
         const connectionUri = `${ENV.MONGO_URI}/${dbName}`;
 

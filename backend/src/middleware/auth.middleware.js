@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+
+import { UserRolesEnum } from "../../constants.js";
 import { ENV } from "../config/env.config.js";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -37,7 +39,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
 });
 
 export const verifyAdmin = (req, _, next) => {
-    if (req.user?.role !== "admin") {
+    if (req.user?.role !== UserRolesEnum.ADMIN) {
         throw new ApiError(403, "Forbidden: Admins only");
     }
     next();
