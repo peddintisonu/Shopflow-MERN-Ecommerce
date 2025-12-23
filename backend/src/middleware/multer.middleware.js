@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import multer from "multer";
 import path from "path";
+import { MAX_FILE_SIZE_BYTES } from "../constants.js";
 import { ApiError } from "../utils/ApiError.js";
 
 // Define the allowed file types
@@ -38,7 +39,7 @@ const fileFilter = (req, file, cb) => {
 export const upload = multer({
     storage,
     limits: {
-        fileSize: 5 * 1024 * 1024, // 5 MB limit
+        fileSize: MAX_FILE_SIZE_BYTES, // 5 MB limit
     },
     fileFilter, // Add the file filter function here
 });

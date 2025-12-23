@@ -9,6 +9,7 @@ import {
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { wrapValidator } from "../utils/helpers.js";
 import {
     loginUserValidator,
     registerUserValidator,
@@ -19,12 +20,15 @@ const router = Router();
 router.post(
     "/register",
     upload.single("avatar"),
-    registerUserValidator,
+    wrapValidator(registerUserValidator),
     asyncHandler(registerUser)
 );
 
-router.post("/login", loginUserValidator, asyncHandler(loginUser));
-
+router.post(
+    "/login",
+    wrapValidator(loginUserValidator),
+    asyncHandler(loginUser)
+);
 router.post("/logout", verifyJWT, asyncHandler(logoutUser));
 
 router.post("/refresh-token", asyncHandler(refreshAccessToken));

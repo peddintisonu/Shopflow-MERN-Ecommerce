@@ -6,6 +6,13 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+const createTokenCookieOptions = (maxAgeMs) => ({
+    maxAge: maxAgeMs,
+});
+
+const REFRESH_TOKEN_MAX_AGE = 10 * 24 * 60 * 60 * 1000; // 10 days
+const ACCESS_TOKEN_MAX_AGE = 15 * 60 * 1000; // 15 minutes
+
 export const registerUser = async (req, res) => {
     // --- 1. Data Extraction ---
     const { username, password, email, firstName, lastName } = req.body;
@@ -47,15 +54,8 @@ export const registerUser = async (req, res) => {
         "-password -refreshToken -__v"
     );
 
-    const refreshTokenOptions = {
-        ...COOKIE_OPTIONS,
-        maxAge: 10 * 24 * 60 * 60 * 1000,
-    };
-
-    const accessTokenOptions = {
-        ...COOKIE_OPTIONS,
-        maxAge: 15 * 60 * 1000,
-    };
+    const refreshTokenOptions = createTokenCookieOptions(REFRESH_TOKEN_MAX_AGE);
+    const accessTokenOptions = createTokenCookieOptions(ACCESS_TOKEN_MAX_AGE);
 
     // --- 3. Response ---
     return res
@@ -94,15 +94,8 @@ export const loginUser = async (req, res) => {
         "-password -refreshToken -__v"
     );
 
-    const refreshTokenOptions = {
-        ...COOKIE_OPTIONS,
-        maxAge: 10 * 24 * 60 * 60 * 1000,
-    };
-
-    const accessTokenOptions = {
-        ...COOKIE_OPTIONS,
-        maxAge: 15 * 60 * 1000,
-    };
+    const refreshTokenOptions = createTokenCookieOptions(REFRESH_TOKEN_MAX_AGE);
+    const accessTokenOptions = createTokenCookieOptions(ACCESS_TOKEN_MAX_AGE);
 
     return res
         .status(200)
@@ -163,14 +156,11 @@ export const refreshAccessToken = async (req, res) => {
         user.refreshToken = newRefreshToken;
         await user.save({ validateBeforeSave: false });
 
-        const refreshTokenOptions = {
-            ...COOKIE_OPTIONS,
-            maxAge: 10 * 24 * 60 * 60 * 1000,
-        };
-        const accessTokenOptions = {
-            ...COOKIE_OPTIONS,
-            maxAge: 15 * 60 * 1000,
-        };
+        const refreshTokenOptions = createTokenCookieOptions(
+            REFRESH_TOKEN_MAX_AGE
+        );
+        const accessTokenOptions =
+            createTokenCookieOptions(ACCESS_TOKEN_MAX_AGE);
 
         return res
             .status(200)
@@ -183,10 +173,14 @@ export const refreshAccessToken = async (req, res) => {
                 })
             );
     } catch (error) {
-        // This catch block handles expired/malformed JWTs
-        throw new ApiError(
-            401,
-            error?.message || "Invalid or expired refresh token"
-        );
+        // JWT-specific errors should be 401, other errors should propagate
+        if (
+            error.name === "JsonWebTokenError" ||
+            error.name === "TokenExpiredError"
+        ) {
+            throw new ApiError(401, "Invalid or expired refresh token");
+        }
+        // Re-throw other errors (e.g., database errors) to be handled by global error handler
+        throw error;
     }
 };
