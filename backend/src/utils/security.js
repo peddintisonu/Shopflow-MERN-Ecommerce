@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-import { DB_CONSTANTS } from "../../constants.js";
 import { ENV } from "../config/env.config.js";
+import { ACCESS_TOKEN_EXPIRY, REFRESH_TOKEN_EXPIRY } from "../constants.js";
 
 export const hashPassword = async (password) => {
     return await bcrypt.hash(password, 10);
@@ -16,7 +16,7 @@ export const comparePassword = async (password, hash) => {
 export const generateRefreshToken = (payload) => {
     try {
         const token = jwt.sign(payload, ENV.REFRESH_TOKEN_SECRET, {
-            expiresIn: DB_CONSTANTS.REFRESH_TOKEN_EXPIRY,
+            expiresIn: REFRESH_TOKEN_EXPIRY,
         });
         return token;
     } catch (error) {
@@ -28,7 +28,7 @@ export const generateRefreshToken = (payload) => {
 export const generateAccessToken = (payload) => {
     try {
         const token = jwt.sign(payload, ENV.ACCESS_TOKEN_SECRET, {
-            expiresIn: DB_CONSTANTS.ACCESS_TOKEN_EXPIRY,
+            expiresIn: ACCESS_TOKEN_EXPIRY,
         });
         return token;
     } catch (error) {
