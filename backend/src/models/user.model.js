@@ -1,7 +1,7 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import mongoose from "mongoose";
 
-import { DEFAULT_USER_AVATAR } from "../../constants.js";
+import { DEFAULT_USER_AVATAR } from "../constants.js";
 import {
     comparePassword,
     generateAccessToken,

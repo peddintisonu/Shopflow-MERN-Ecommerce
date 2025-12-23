@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
-import { COOKIE_OPTIONS } from "../../constants.js";
 import { uploadToCloudinary } from "../config/cloudinary.config.js";
 import { ENV } from "../config/env.config.js";
+import { COOKIE_OPTIONS } from "../constants.js";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createTokenCookieOptions = (maxAgeMs) => ({
+    ...COOKIE_OPTIONS,
     maxAge: maxAgeMs,
 });
 
