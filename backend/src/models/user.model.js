@@ -1,7 +1,7 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import mongoose from "mongoose";
 
-import { DB_CONSTANTS } from "../../constants.js";
+import { DEFAULT_USER_AVATAR } from "../../constants.js";
 import {
     comparePassword,
     generateAccessToken,
@@ -76,7 +76,10 @@ const userSchema = new mongoose.Schema(
         },
         firstName: { type: String, required: true, trim: true },
         lastName: { type: String, default: "", trim: true },
-        password: { type: String, default: null },
+        password: {
+            type: String,
+            required: [true, "Password is required"],
+        },
         role: {
             type: String,
             enum: ["USER", "ADMIN"],
@@ -84,9 +87,8 @@ const userSchema = new mongoose.Schema(
         },
         avatar: {
             type: String,
-            default: DB_CONSTANTS.DEFAULT_USER_AVATAR,
+            default: DEFAULT_USER_AVATAR,
         },
-        googleId: { type: String, default: null },
         addresses: { type: [addressSchema], default: [] },
         wishlist: [
             {
@@ -110,11 +112,16 @@ const userSchema = new mongoose.Schema(
 
 // --- HOOKS & METHODS ---
 
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    if (this.password === null) return next();
-    this.password = await hashPassword(this.password);
-    next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+
+    try {
+        if (this.password === null) return;
+        this.password = await hashPassword(this.password);
+    } catch (error) {
+        // If hashing fails, throw the error. Mongoose will catch it and stop the save.
+        throw new Error("Error hashing password: " + error.message);
+    }
 });
 
 userSchema.methods.isPasswordCorrect = async function (password) {

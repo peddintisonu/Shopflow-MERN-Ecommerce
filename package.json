@@ -1,7 +1,8 @@
 {
-    "name": "mono-repo-template",
+    "name": "shopflow",
+    "private": true,
     "version": "1.0.0",
-    "description": "",
+    "description": "The monorepo for the Shopflow e-commerce application.",
     "main": "index.js",
     "type": "module",
     "workspaces": [
