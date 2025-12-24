@@ -8,6 +8,8 @@ import { errorHandler } from "./middleware/error.middleware.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 
 import authRoutes from "./routes/auth.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
+import productRoutes from "./routes/product.routes.js";
 import userRoutes from "./routes/user.routes.js";
 
 const app = express();
@@ -47,6 +49,8 @@ app.get("/", (req, res) => {
 // --- Routes ---
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/products", productRoutes);
 
 // Health check endpoint (Should be with other routes)
 app.get("/api/v1/health", (_, res) => {
