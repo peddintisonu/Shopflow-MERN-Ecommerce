@@ -106,6 +106,13 @@ export const createProduct = async (req, res) => {
         );
     }
 
+    if (salePrice && parseFloat(salePrice) > parseFloat(originalPrice)) {
+        throw new ApiError(
+            400,
+            "Sale price cannot be greater than original price"
+        );
+    }
+
     const owner = req.user._id;
 
     const newProduct = await Product.create({
@@ -181,7 +188,17 @@ export const updateProduct = async (req, res) => {
 
         // Logic: Update salePrice if provided, OR if originalPrice changed,
         // ensure salePrice isn't higher than original (optional logic, but good practice)
-        if (salePrice) product.price.salePrice = parseFloat(salePrice);
+        if (salePrice) {
+            product.price.salePrice = parseFloat(salePrice);
+        }
+
+        // Ensure salePrice doesn't exceed originalPrice
+        if (product.price.salePrice > product.price.originalPrice) {
+            throw new ApiError(
+                400,
+                "Sale price cannot be greater than original price"
+            );
+        }
     }
 
     // 5. Handle Name & Slug (Complex)
