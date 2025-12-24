@@ -1,4 +1,4 @@
-import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // This controller will simply return the user object that the verifyJWT middleware attached.

@@ -30,7 +30,8 @@ const productSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-        name: { type: String, required: true, trim: true },
+
+        name: { type: String, required: true, trim: true, unique: true },
         description: { type: String, required: true },
 
         brand: { type: String, required: true, index: true },
@@ -99,6 +100,7 @@ const productSchema = new mongoose.Schema(
 // Index for Search: Searches Name, Desc, Brand, and Specs
 productSchema.index({
     name: "text",
+    slug: "text",
     description: "text",
     brand: "text",
     "specifications.value": "text",
