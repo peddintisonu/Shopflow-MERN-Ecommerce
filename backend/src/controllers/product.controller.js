@@ -251,7 +251,7 @@ export const updateProduct = async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, product, "Product updated successfully"));
+        .json(new ApiResponse(200, "Product updated successfully", product));
 };
 
 export const deleteProduct = async (req, res) => {

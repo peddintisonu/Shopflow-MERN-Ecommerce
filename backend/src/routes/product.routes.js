@@ -8,12 +8,13 @@ import {
 } from "../controllers/product.controller.js";
 import { verifyAdmin, verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const router = Router();
 
 // --- Public Routes ---
-router.get("/", getAllProducts);
-router.get("/:productId", getProductById);
+router.get("/", asyncHandler(getAllProducts));
+router.get("/:productId", asyncHandler(getProductById));
 
 // --- Protected Admin Routes ---
 // Apply Auth middleware globally to admin routes
@@ -26,7 +27,7 @@ router.post(
         { name: "thumbnail", maxCount: 1 },
         { name: "gallery", maxCount: 4 },
     ]),
-    createProduct
+    asyncHandler(createProduct)
 );
 
 // Update (Needs files - maybe they update the image)
@@ -36,10 +37,10 @@ router.patch(
         { name: "thumbnail", maxCount: 1 },
         { name: "gallery", maxCount: 4 },
     ]),
-    updateProduct
+    asyncHandler(updateProduct)
 );
 
 // Delete (No files needed)
-router.route("/:productId").delete(deleteProduct);
+router.delete("/:productId", asyncHandler(deleteProduct));
 
 export default router;
