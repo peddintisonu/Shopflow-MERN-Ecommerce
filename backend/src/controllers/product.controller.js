@@ -3,8 +3,8 @@ import slugify from "slugify";
 import { uploadToCloudinary } from "../config/cloudinary.config.js";
 import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js";
-import { ApiError } from "../utils/apiError.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // ADMIN CONTROLLERS
 export const createProduct = async (req, res) => {
