@@ -1,7 +1,6 @@
 import { ENV } from "./env.config.js";
 
-const allowedOrigins = [ENV.CORS_ORIGIN_DEV, ENV.CORS_ORIGIN_PROD];
-
+const allowedOrigins = [ENV.CORS_ORIGIN];
 export const corsOptions = {
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
