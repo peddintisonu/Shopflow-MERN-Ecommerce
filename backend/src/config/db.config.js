@@ -3,11 +3,7 @@ import { ENV } from "./env.config.js";
 
 export const connectDB = async () => {
     try {
-        const dbName =
-            ENV.NODE_ENV?.toLowerCase() === "production"
-                ? ENV.DB_NAME_PROD
-                : ENV.DB_NAME_DEV;
-
+        const dbName = ENV.DB_NAME;
         const connectionUri = `${ENV.MONGO_URI}/${dbName}`;
 
         const connectionInstance = await mongoose.connect(connectionUri);

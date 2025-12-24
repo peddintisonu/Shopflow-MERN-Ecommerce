@@ -1,5 +1,6 @@
 // Database Constants
-export const DB_NAME = "ecommerce_db";
+export const DB_NAME_DEV = "shopflow_dev";
+export const DB_NAME_PROD = "shopflow_prod";
 
 // User Constants
 export const UserRolesEnum = {
@@ -33,7 +34,7 @@ export const AVAILABLE_PRODUCT_STATUSES = Object.values(ProductStatusEnum);
 export const COOKIE_OPTIONS = {
     httpOnly: true,
     secure: process.env.NODE_ENV?.toLowerCase() === "production", // In production, secure will be true
-    sameSite: "lax",
+    sameSite: "strict",
 };
 
 // Token Constants
