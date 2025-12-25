@@ -21,8 +21,6 @@ import {
 
 const router = Router();
 
-
-
 // Only this one needs protection
 router.post("/logout", verifyJWT, logoutUser);
 router.post("/refresh-token", refreshAccessToken);
