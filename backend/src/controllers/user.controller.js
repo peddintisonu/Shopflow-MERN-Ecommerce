@@ -8,6 +8,7 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendPasswordChangedNotification } from "../utils/mail.js";
 import {
     isStrongPassword,
     isValidUsername,
@@ -51,6 +52,12 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
     // 3. Update
     user.password = newPassword;
     await user.save();
+
+    try {
+        await sendPasswordChangedNotification(user.email);
+    } catch (error) {
+        console.error("Password changed notification email failed:", error);
+    }
 
     res.status(200).json(new ApiResponse(200, "Password changed successfully"));
 });
