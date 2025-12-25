@@ -26,7 +26,7 @@ const sendEmail = async ({ email, subject, htmlContent }) => {
         console.log(`[MAIL] Email sent: ${info.messageId}`);
         return true;
     } catch (error) {
-        console.error(`[MAIL ERROR] Failed to send email to ${email}:`, error);
+        console.error(`[MAIL ERROR] Failed to send email:`, error.message);
         return false;
     }
 };
@@ -46,7 +46,7 @@ export const sendVerificationEmail = async (email, otp) => {
 
     return await sendEmail({
         email,
-        subject: `Your Verification Code: ${otp}`,
+        subject: "Verify Your Shopflow Email",
         htmlContent: html,
     });
 };
@@ -86,7 +86,7 @@ export const sendPasswordResetEmail = async (email, otp) => {
 
     return await sendEmail({
         email,
-        subject: `Reset Password Code: ${otp}`,
+        subject: "Reset Your Shopflow Password",
         htmlContent: html,
     });
 };

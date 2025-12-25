@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/axios";
 
@@ -20,8 +20,10 @@ const ForgotPassword = () => {
                 email,
             });
             setMessage(response.data.message);
-            // Navigate to the reset page, passing the email for context
-            navigate("/reset-password", { state: { email } });
+            // Navigate to the reset page after a short delay so user sees the message
+            setTimeout(() => {
+                navigate("/reset-password", { state: { email } });
+            }, 1500);
         } catch (err) {
             setError(
                 err.response?.data?.message || "Failed to send reset code."

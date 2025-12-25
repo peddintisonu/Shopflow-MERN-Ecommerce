@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth.js";
-
 
 const SignIn = () => {
     const [formData, setFormData] = useState({ identifier: "", password: "" });
@@ -24,7 +23,9 @@ const SignIn = () => {
         } catch (err) {
             if (err.response?.status === 403) {
                 // 403 for not verified
-                setError("Account not verified. A new code has been sent.");
+                setError(
+                    "Account not verified. Please sign in with your email to verify."
+                );
                 navigate("/verify-email", {
                     state: { email: formData.identifier },
                 });

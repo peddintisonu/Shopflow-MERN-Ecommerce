@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/axios";
 
 const SignUp = () => {
@@ -38,11 +38,7 @@ const SignUp = () => {
         }
 
         try {
-            await axiosInstance.post("/auth/register", data, {
-                // Axios automatically sets the correct header for FormData
-                // but you can be explicit if you want.
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+            await axiosInstance.post("/auth/register", data);
             // On success, navigate to the verification page, passing the email
             navigate("/verify-email", { state: { email: formData.email } });
         } catch (err) {
@@ -74,6 +70,7 @@ const SignUp = () => {
                         <input
                             type="text"
                             name="firstName"
+                            value={formData.firstName}
                             onChange={handleChange}
                             required
                             className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-orange-500"

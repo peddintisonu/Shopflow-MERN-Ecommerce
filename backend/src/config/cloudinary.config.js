@@ -44,10 +44,18 @@ export const deleteFromCloudinary = async (publicId) => {
 };
 
 // Helper to extract ID from URL
-// e.g., "https://.../v1/folder/my-image.jpg" -> "folder/my-image"
+// // e.g., "https://res.cloudinary.com/cloud/image/upload/v1234/folder/my-image.jpg" -> "folder/my-image"
 export const getPublicIdFromUrl = (url) => {
     if (!url) return null;
-    const splitUrl = url.split("/");
-    const lastPart = splitUrl[splitUrl.length - 1]; // "my-image.jpg"
-    return lastPart.split(".")[0]; // "my-image"
+    try {
+        // Match the path after /upload/v[version]/ or /upload/
+        const regex = /\/upload\/(?:v\d+\/)?(.+)$/;
+        const match = url.match(regex);
+        if (!match) return null;
+        // Remove file extension from the last segment
+        const pathWithExt = match[1];
+        return pathWithExt.replace(/\.[^/.]+$/, "");
+    } catch {
+        return null;
+    }
 };

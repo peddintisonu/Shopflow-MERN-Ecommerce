@@ -27,9 +27,21 @@ const UpdateAvatar = () => {
         const file = e.target.files[0];
         if (file) {
             setNewAvatarFile(file);
+            // Revoke previous preview URL to prevent memory leak
+            if (preview) {
+                URL.revokeObjectURL(preview);
+            }
             setPreview(URL.createObjectURL(file));
         }
     };
+
+    useEffect(() => {
+        return () => {
+            if (preview) {
+                URL.revokeObjectURL(preview);
+            }
+        };
+    }, [preview]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
