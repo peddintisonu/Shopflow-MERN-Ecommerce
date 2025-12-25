@@ -3,8 +3,8 @@ import { ApiError } from "../utils/ApiError.js";
 
 // This will be applied to sensitive endpoints that send emails or check passwords
 export const authRateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 requests per window
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 15, // Limit each IP to 15 requests per window
     message: {
         success: false,
         message:
