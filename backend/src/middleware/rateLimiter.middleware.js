@@ -1,19 +1,51 @@
 import { rateLimit } from "express-rate-limit";
 import { ApiError } from "../utils/ApiError.js";
+import { RateLimit } from "../constants.js";
 
-// This will be applied to sensitive endpoints that send emails or check passwords
-export const authRateLimiter = rateLimit({
-    windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 15, // Limit each IP to 15 requests per window
-    message: {
-        success: false,
-        message:
-            "Too many requests from this IP, please try again after 15 minutes",
-    },
-    handler: (req, res, next, options) => {
-        // We throw our custom ApiError so it's handled by our global error handler
-        throw new ApiError(options.statusCode, options.message.message);
-    },
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+// A generic handler to be reused by all limiters
+const rateLimitHandler = (req, res, next, options) => {
+    throw new ApiError(
+        options.statusCode,
+        `Too many requests. ${options.message}`
+    );
+};
+
+// Rate limiter for login attempts
+export const loginRateLimiter = rateLimit({
+    windowMs: RateLimit.LOGIN.WINDOW_MS,
+    max: RateLimit.LOGIN.MAX_REQUESTS,
+    message: `Please try again after ${RateLimit.LOGIN.WINDOW_MS / 60000} minutes.`,
+    handler: rateLimitHandler,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Stricter rate limiter for password reset requests
+export const passwordResetRateLimiter = rateLimit({
+    windowMs: RateLimit.PASSWORD_RESET.WINDOW_MS,
+    max: RateLimit.PASSWORD_RESET.MAX_REQUESTS,
+    message: `Please try again after ${RateLimit.PASSWORD_RESET.WINDOW_MS / 60000} minutes.`,
+    handler: rateLimitHandler,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Rate limiter for email verification and resend requests
+export const emailVerificationRateLimiter = rateLimit({
+    windowMs: RateLimit.EMAIL_VERIFICATION.WINDOW_MS,
+    max: RateLimit.EMAIL_VERIFICATION.MAX_REQUESTS,
+    message: `Please try again after ${RateLimit.EMAIL_VERIFICATION.WINDOW_MS / 60000} minutes.`,
+    handler: rateLimitHandler,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// A more general rate limiter for other auth actions like registration
+export const authGeneralRateLimiter = rateLimit({
+    windowMs: RateLimit.AUTH.WINDOW_MS,
+    max: RateLimit.AUTH.MAX_REQUESTS,
+    message: `Please try again after ${RateLimit.AUTH.WINDOW_MS / 60000} minutes.`,
+    handler: rateLimitHandler,
+    standardHeaders: true,
+    legacyHeaders: false,
 });

@@ -65,6 +65,37 @@ export const REFRESH_TOKEN_EXPIRY_MS = 10 * 24 * 60 * 60 * 1000; // 10 days
 export const FORGOT_PASSWORD_OTP_EXPIRY_MS = 20 * 60 * 1000; // 20 minutes
 export const EMAIL_VERIFICATION_OTP_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
+// Rate Limiting Constants
+export const RateLimit = {
+    // For login attempts
+    LOGIN: {
+        WINDOW_MS: 15 * 60 * 1000, // 15 minutes
+        MAX_REQUESTS: 20, // Generous for testing, can be lowered to 5-10 in production
+    },
+    // For actions that send emails (verification, resend)
+    EMAIL_VERIFICATION: {
+        WINDOW_MS: 15 * 60 * 1000, // 15 minutes
+        MAX_REQUESTS: 10,
+    },
+    // Strictest limit for password reset to prevent spam
+    PASSWORD_RESET: {
+        WINDOW_MS: 60 * 60 * 1000, // 1 hour
+        MAX_REQUESTS: 5,
+    },
+
+    // General auth routes (register, logout, refresh token)
+    AUTH: {
+        WINDOW_MS: 15 * 60 * 1000, // 15 minutes
+        MAX_REQUESTS: 50,
+    },
+
+    // General API routes
+    API: {
+        WINDOW_MS: 15 * 60 * 1000, // 15 minutes
+        MAX_REQUESTS: 100,
+    },
+};
+
 /**
  * =================================================================
  * API & OTHER CONSTANTS

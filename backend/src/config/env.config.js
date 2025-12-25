@@ -23,9 +23,7 @@ export const ENV = {
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:5173",
     FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
-    MAIL_SERVICE: process.env.MAIL_SERVICE,
-    MAIL_USER: process.env.MAIL_USER,
-    MAIL_PASS: process.env.MAIL_PASS,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
 };
 
 if (!ENV.MONGO_URI) {
@@ -37,5 +35,11 @@ if (!ENV.MONGO_URI) {
 if (!ENV.ACCESS_TOKEN_SECRET && !ENV.REFRESH_TOKEN_SECRET) {
     throw new Error(
         "❌ ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET are required but not defined in environment variables"
+    );
+}
+
+if (!ENV.RESEND_API_KEY) {
+    console.warn(
+        "⚠️  RESEND_API_KEY is not defined. Email functionality will not work."
     );
 }

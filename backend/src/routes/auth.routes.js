@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import {
     initiatePasswordReset,
     loginUser,
@@ -12,36 +11,70 @@ import {
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { authRateLimiter } from "../middleware/rateLimiter.middleware.js";
-import { wrapValidator } from "../utils/helpers.js";
+import {
+    authGeneralRateLimiter,
+    emailVerificationRateLimiter,
+    loginRateLimiter,
+    passwordResetRateLimiter,
+} from "../middleware/rateLimiter.middleware.js";
 import {
     loginUserValidator,
     registerUserValidator,
+    // Add other validators here...
+    validate,
 } from "../validators/auth.validator.js";
 
 const router = Router();
 
-// Only this one needs protection
-router.post("/logout", verifyJWT, logoutUser);
-router.post("/refresh-token", refreshAccessToken);
+// --- Public Routes with Specific Rate Limiting ---
 
+// Registration
 router.post(
     "/register",
+    authGeneralRateLimiter,
     upload.single("avatar"),
-    wrapValidator(registerUserValidator),
+    registerUserValidator,
+    validate,
     registerUser
 );
 
-router.use(authRateLimiter);
-
-router.post("/login", wrapValidator(loginUserValidator), loginUser);
+// Login
+router.post(
+    "/login",
+    loginRateLimiter, // Stricter limit for login
+    loginUserValidator,
+    validate,
+    loginUser
+);
 
 // Email Verification
-router.post("/verify-email", verifyEmailOTP);
-router.post("/resend-verification", resendVerificationEmail);
+router.post("/verify-email", emailVerificationRateLimiter, verifyEmailOTP);
 
-// Password Reset
-router.post("/forgot-password", initiatePasswordReset);
-router.post("/reset-password", resetPassword);
+// Resend Verification
+router.post(
+    "/resend-verification",
+    emailVerificationRateLimiter,
+    resendVerificationEmail
+);
+
+// Password Reset Flow
+router.post(
+    "/forgot-password",
+    passwordResetRateLimiter, // Strictest limit
+    initiatePasswordReset
+);
+router.post(
+    "/reset-password",
+    passwordResetRateLimiter, // Strictest limit
+    resetPassword
+);
+
+// --- Secured Routes ---
+
+// Logout (Protected, so less strict limit)
+router.post("/logout", authGeneralRateLimiter, verifyJWT, logoutUser);
+
+// Refresh Token (Protected)
+router.post("/refresh-token", authGeneralRateLimiter, refreshAccessToken);
 
 export default router;
