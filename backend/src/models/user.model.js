@@ -5,9 +5,10 @@ import { DEFAULT_USER_AVATAR } from "../constants.js";
 import {
     comparePassword,
     generateAccessToken,
-    generateRandomToken,
+    generateOTP,
     generateRefreshToken,
     hashPassword,
+    hashRandomToken,
 } from "../utils/security.js";
 
 const addressSchema = new mongoose.Schema({
@@ -100,12 +101,15 @@ const userSchema = new mongoose.Schema(
         refreshToken: { type: String },
 
         // Security & Lifecycle
-        forgotPasswordToken: { type: String },
+        forgotPasswordOtp: { type: String },
         forgotPasswordExpiry: { type: Date },
-        emailVerificationToken: { type: String },
+
+        emailVerificationOtp: { type: String },
         emailVerificationExpiry: { type: Date },
         isActive: { type: Boolean, default: true },
         lastLogin: { type: Date },
+
+        deletedAt: { type: Date, default: null },
     },
     { timestamps: true }
 );
@@ -142,11 +146,20 @@ userSchema.methods.generateRefreshToken = function () {
     return generateRefreshToken({ _id: this._id });
 };
 
-userSchema.methods.generateResetToken = function () {
-    const { unHashedToken, hashedToken } = generateRandomToken();
-    this.forgotPasswordToken = hashedToken;
+userSchema.methods.generatePasswordResetOtp = function () {
+    const unhashedOtp = generateOTP();
+    const hashedToken = hashRandomToken(unhashedOtp);
+    this.forgotPasswordOtp = hashedToken;
     this.forgotPasswordExpiry = Date.now() + 20 * 60 * 1000; // 20 mins
-    return unHashedToken;
+    return unhashedOtp;
+};
+
+userSchema.methods.generateEmailVerificationOtp = function () {
+    const unhashedOtp = generateOTP();
+    const hashedToken = hashRandomToken(unhashedOtp);
+    this.emailVerificationOtp = hashedToken;
+    this.emailVerificationExpiry = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+    return unhashedOtp;
 };
 
 export const User = mongoose.model("User", userSchema);

@@ -32,3 +32,22 @@ export const uploadToCloudinary = async (localFilePath) => {
         return null;
     }
 };
+
+// Add this to backend/src/config/cloudinary.config.js
+export const deleteFromCloudinary = async (publicId) => {
+    try {
+        if (!publicId) return null;
+        await cloudinary.uploader.destroy(publicId);
+    } catch (error) {
+        console.error("Error deleting from cloudinary:", error);
+    }
+};
+
+// Helper to extract ID from URL
+// e.g., "https://.../v1/folder/my-image.jpg" -> "folder/my-image"
+export const getPublicIdFromUrl = (url) => {
+    if (!url) return null;
+    const splitUrl = url.split("/");
+    const lastPart = splitUrl[splitUrl.length - 1]; // "my-image.jpg"
+    return lastPart.split(".")[0]; // "my-image"
+};

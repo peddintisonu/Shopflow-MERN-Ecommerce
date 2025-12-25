@@ -1,7 +1,7 @@
-# File Tree: MERN-ECOMMERCE-APP
+# File Tree: Shopflow - MERN Ecommerce
 
-**Generated:** 12/23/2025, 8:41:55 PM
-**Root Path:** `d:\Projects\Web-Projects\MERN-ECOMMERCE-APP`
+**Generated:** 12/25/2025, 10:06:00 PM
+**Root Path:** `d:\Projects\Web-Projects\Shopflow - MERN Ecommerce`
 
 ```
 ├── 📁 backend
@@ -14,6 +14,8 @@
 │   │   │   └── 📄 env.config.js
 │   │   ├── 📁 controllers
 │   │   │   ├── 📄 auth.controller.js
+│   │   │   ├── 📄 category.controller.js
+│   │   │   ├── 📄 product.controller.js
 │   │   │   └── 📄 user.controller.js
 │   │   ├── 📁 middleware
 │   │   │   ├── 📄 auth.middleware.js
@@ -28,18 +30,22 @@
 │   │   │   └── 📄 user.model.js
 │   │   ├── 📁 routes
 │   │   │   ├── 📄 auth.routes.js
+│   │   │   ├── 📄 category.routes.js
+│   │   │   ├── 📄 product.routes.js
 │   │   │   └── 📄 user.routes.js
 │   │   ├── 📁 utils
 │   │   │   ├── 📄 ApiError.js
 │   │   │   ├── 📄 ApiResponse.js
 │   │   │   ├── 📄 asyncHandler.js
+│   │   │   ├── 📄 helpers.js
+│   │   │   ├── 📄 mail.js
 │   │   │   └── 📄 security.js
 │   │   ├── 📁 validators
 │   │   │   └── 📄 auth.validator.js
 │   │   ├── 📄 app.js
+│   │   ├── 📄 constants.js
 │   │   └── 📄 server.js
 │   ├── ⚙️ .gitignore
-│   ├── 📄 constants.js
 │   └── ⚙️ package.json
 ├── 📁 frontend
 │   ├── 📁 public
@@ -56,10 +62,16 @@
 │   │   ├── 📁 hooks
 │   │   │   └── 📄 useAuth.js
 │   │   ├── 📁 pages
+│   │   │   ├── 📄 ChangePassword.jsx
+│   │   │   ├── 📄 ForgotPassword.jsx
 │   │   │   ├── 📄 Home.jsx
 │   │   │   ├── 📄 Profile.jsx
+│   │   │   ├── 📄 ResetPassword.jsx
 │   │   │   ├── 📄 SignIn.jsx
-│   │   │   └── 📄 SignUp.jsx
+│   │   │   ├── 📄 SignUp.jsx
+│   │   │   ├── 📄 UpdateAvatar.jsx
+│   │   │   ├── 📄 UpdateProfile.jsx
+│   │   │   └── 📄 VerifyEmail.jsx
 │   │   ├── 📄 App.jsx
 │   │   ├── 🎨 index.css
 │   │   └── 📄 main.jsx
@@ -71,6 +83,7 @@
 ├── ⚙️ .gitignore
 ├── ⚙️ .prettierignore
 ├── ⚙️ .prettierrc
+├── 📝 File Tree.md
 ├── 📄 LICENSE
 ├── 📝 README.md
 ├── 📄 eslint.config.mjs

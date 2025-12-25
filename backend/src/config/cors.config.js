@@ -11,5 +11,6 @@ export const corsOptions = {
             callback(new Error("Not allowed by CORS"));
         }
     },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // Allow cookies to be sent with requests
 };

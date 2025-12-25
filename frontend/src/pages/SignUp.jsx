@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { axiosInstance } from "../api/axios";
 
 const SignUp = () => {
@@ -10,9 +10,9 @@ const SignUp = () => {
         email: "",
         password: "",
     });
-    const [avatar, setAvatar] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [avatarFile, setAvatarFile] = useState(null);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -20,7 +20,7 @@ const SignUp = () => {
     };
 
     const handleFileChange = (e) => {
-        setAvatar(e.target.files[0]);
+        setAvatarFile(e.target.files[0]);
     };
 
     const handleSubmit = async (e) => {
@@ -29,22 +29,23 @@ const SignUp = () => {
         setLoading(true);
 
         const data = new FormData();
-        data.append("firstName", formData.firstName);
-        data.append("lastName", formData.lastName);
-        data.append("username", formData.username);
-        data.append("email", formData.email);
-        data.append("password", formData.password);
-        if (avatar) {
-            data.append("avatar", avatar);
+        // Append all text fields from the formData state
+        Object.keys(formData).forEach((key) => data.append(key, formData[key]));
+
+        // Append the file if one was selected
+        if (avatarFile) {
+            data.append("avatar", avatarFile);
         }
 
         try {
-            await axiosInstance.post("/auth/register", data);
-            navigate("/signin");
+            await axiosInstance.post("/auth/register", data, {
+                // Axios automatically sets the correct header for FormData
+                // but you can be explicit if you want.
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            // On success, navigate to the verification page, passing the email
+            navigate("/verify-email", { state: { email: formData.email } });
         } catch (err) {
-            if (import.meta.env.DEV) {
-                console.error("Full Axios Error:", err);
-            }
             setError(
                 err.response?.data?.message ||
                     "Registration failed. Please try again."
@@ -55,66 +56,103 @@ const SignUp = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8">
-            <h2 className="text-2xl font-bold text-center">
+        <div className="max-w-md mx-auto mt-10 p-8 bg-gray-800 rounded-lg shadow-lg">
+            <h2 className="text-3xl font-bold text-center mb-6 text-orange-500">
                 Create an Account
             </h2>
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-                <input
-                    name="firstName"
-                    placeholder="First Name"
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
-                <input
-                    name="lastName"
-                    placeholder="Last Name"
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                />
-                <input
-                    name="username"
-                    placeholder="Username"
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
-                <input
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+            {error && (
+                <p className="bg-red-500 text-white p-3 rounded mb-4 text-center">
+                    {error}
+                </p>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex gap-4">
+                    <div className="w-1/2">
+                        <label className="block mb-1 text-sm font-medium text-gray-300">
+                            First Name
+                        </label>
+                        <input
+                            type="text"
+                            name="firstName"
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-orange-500"
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <label className="block mb-1 text-sm font-medium text-gray-300">
+                            Last Name
+                        </label>
+                        <input
+                            type="text"
+                            name="lastName"
+                            onChange={handleChange}
+                            className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-orange-500"
+                        />
+                    </div>
+                </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                        Avatar
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        name="username"
+                        onChange={handleChange}
+                        required
+                        className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-orange-500"
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        onChange={handleChange}
+                        required
+                        className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-orange-500"
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        name="password"
+                        onChange={handleChange}
+                        required
+                        className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-orange-500"
+                    />
+                </div>
+                <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-300">
+                        Avatar (Optional)
                     </label>
                     <input
                         type="file"
+                        name="avatar"
                         onChange={handleFileChange}
-                        className="w-full p-2 border rounded"
+                        accept="image/*"
+                        className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200 cursor-pointer"
                     />
                 </div>
-                {error && <p className="text-red-500 text-sm">{error}</p>}
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                    className="w-full bg-orange-600 hover:bg-orange-700 p-3 rounded text-lg font-bold disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
                 >
-                    {loading ? "Registering..." : "Register"}
+                    {loading ? "Creating Account..." : "Sign Up"}
                 </button>
             </form>
+            <p className="text-center text-sm text-gray-400 mt-6">
+                Already have an account?{" "}
+                <Link to="/signin" className="text-orange-400 hover:underline">
+                    Sign In
+                </Link>
+            </p>
         </div>
     );
 };

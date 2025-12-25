@@ -6,9 +6,10 @@ import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 // ADMIN CONTROLLERS
-export const createCategory = async (req, res) => {
+export const createCategory = asyncHandler(async (req, res) => {
     const { name, parent } = req.body;
 
     if (!name) {
@@ -54,9 +55,9 @@ export const createCategory = async (req, res) => {
     res.status(201).json(
         new ApiResponse(201, "Category created successfully", category)
     );
-};
+});
 
-export const updateCategory = async (req, res) => {
+export const updateCategory = asyncHandler(async (req, res) => {
     const { categoryId } = req.params;
     const { name, parent } = req.body;
 
@@ -124,9 +125,9 @@ export const updateCategory = async (req, res) => {
                 updatedCategory
             )
         );
-};
+});
 
-export const deleteCategory = async (req, res) => {
+export const deleteCategory = asyncHandler(async (req, res) => {
     const { categoryId } = req.params;
 
     const category = await Category.findById(categoryId);
@@ -156,10 +157,10 @@ export const deleteCategory = async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, "Category deleted successfully", {}));
-};
+});
 
 // PUBLIC CONTROLLERS
-export const getCategoryById = async (req, res) => {
+export const getCategoryById = asyncHandler(async (req, res) => {
     const { categoryId } = req.params;
 
     if (!mongoose.isValidObjectId(categoryId)) {
@@ -178,13 +179,13 @@ export const getCategoryById = async (req, res) => {
     res.status(200).json(
         new ApiResponse(200, "Category fetched successfully", category)
     );
-};
+});
 
-export const getAllCategories = async (req, res) => {
+export const getAllCategories = asyncHandler(async (req, res) => {
     const categories = await Category.find()
         .populate("parent", "name slug")
         .lean();
     res.status(200).json(
         new ApiResponse(200, "Categories fetched successfully", categories)
     );
-};
+});

@@ -1,23 +1,23 @@
-import { Navigate, useLocation } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth.js";
 
-const AuthLayout = ({ children }) => {
+import { Navigate, Outlet } from "react-router-dom";
+
+const AuthLayout = () => {
     const { isAuthenticated, loading } = useAuth();
-    const location = useLocation();
 
-    // Show a loading state while the initial auth check is happening
     if (loading) {
-        return <div className="text-center mt-8">Loading...</div>;
+        return (
+            <div className="text-center mt-20">
+                <h1>Loading...</h1>
+            </div>
+        );
     }
 
-    // If authenticated, render the child component (e.g., Profile page)
-    if (isAuthenticated) {
-        return children;
+    if (!isAuthenticated) {
+        return <Navigate to="/signin" replace />;
     }
 
-    // If not authenticated, redirect to the sign-in page
-    // We pass the original location in state so we can redirect back after login.
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    return <Outlet />; // This will render the nested child route (e.g., <Profile />)
 };
 
 export default AuthLayout;

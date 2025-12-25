@@ -24,7 +24,7 @@ const isEmail = (email) => {
  * @param {string} password - The password string to validate.
  * @returns {boolean} - True if the password is strong, false otherwise.
  */
-const isStrongPassword = (password) => {
+export const isStrongPassword = (password) => {
     if (typeof password !== "string" || password.length < 8) {
         return false;
     }
@@ -44,7 +44,7 @@ const isStrongPassword = (password) => {
  * @param {string} username - The username string to validate.
  * @returns {boolean}
  */
-const isValidUsername = (username) => {
+export const isValidUsername = (username) => {
     if (typeof username !== "string" || username.length < 3) {
         return false;
     }
