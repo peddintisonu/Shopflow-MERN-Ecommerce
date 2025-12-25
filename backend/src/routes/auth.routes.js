@@ -21,16 +21,18 @@ import {
 
 const router = Router();
 
+
+
+// Only this one needs protection
+router.post("/logout", verifyJWT, logoutUser);
+router.post("/refresh-token", refreshAccessToken);
+
 router.post(
     "/register",
     upload.single("avatar"),
     wrapValidator(registerUserValidator),
     registerUser
 );
-
-// Only this one needs protection
-router.post("/logout", verifyJWT, logoutUser);
-router.post("/refresh-token", refreshAccessToken);
 
 router.use(authRateLimiter);
 

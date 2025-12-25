@@ -260,7 +260,6 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
             "Failed to send verification email. Please try again later."
         );
     }
-    ``;
     res.status(200).json(
         new ApiResponse(200, null, "Verification email sent successfully")
     );
