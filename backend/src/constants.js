@@ -52,7 +52,7 @@ export const AVAILABLE_PRODUCT_STATUSES = Object.values(ProductStatusEnum);
 export const COOKIE_OPTIONS = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
 };
 
 // JWT `expiresIn` strings
