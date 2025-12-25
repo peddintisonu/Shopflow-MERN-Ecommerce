@@ -61,7 +61,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     } catch (error) {
         // If email fails, don't block registration. User can use "resend" later.
         console.error(
-            "Failed to send verification email during registration:",
+            "Verification email failed to send for user:",
+            newUser._id,
             error
         );
     }
