@@ -37,3 +37,9 @@ if (!ENV.ACCESS_TOKEN_SECRET && !ENV.REFRESH_TOKEN_SECRET) {
         "❌ ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET are required but not defined in environment variables"
     );
 }
+
+if (!ENV.RESEND_API_KEY) {
+    console.warn(
+        "⚠️  RESEND_API_KEY is not defined. Email functionality will not work."
+    );
+}

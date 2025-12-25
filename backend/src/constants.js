@@ -66,7 +66,6 @@ export const FORGOT_PASSWORD_OTP_EXPIRY_MS = 20 * 60 * 1000; // 20 minutes
 export const EMAIL_VERIFICATION_OTP_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Rate Limiting Constants
-// Rate Limiting Constants
 export const RateLimit = {
     // For login attempts
     LOGIN: {
