@@ -20,8 +20,6 @@ import {
 import {
     loginUserValidator,
     registerUserValidator,
-    // Add other validators here...
-    validate,
 } from "../validators/auth.validator.js";
 
 const router = Router();
@@ -34,7 +32,6 @@ router.post(
     authGeneralRateLimiter,
     upload.single("avatar"),
     registerUserValidator,
-    validate,
     registerUser
 );
 
@@ -43,7 +40,6 @@ router.post(
     "/login",
     loginRateLimiter, // Stricter limit for login
     loginUserValidator,
-    validate,
     loginUser
 );
 
