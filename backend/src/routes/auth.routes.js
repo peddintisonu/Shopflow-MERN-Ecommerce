@@ -1,14 +1,18 @@
 import { Router } from "express";
 
 import {
+    initiatePasswordReset,
     loginUser,
     logoutUser,
     refreshAccessToken,
     registerUser,
+    resendVerificationEmail,
+    resetPassword,
+    verifyEmailOTP,
 } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import { authRateLimiter } from "../middleware/rateLimiter.middleware.js";
 import { wrapValidator } from "../utils/helpers.js";
 import {
     loginUserValidator,
@@ -17,20 +21,27 @@ import {
 
 const router = Router();
 
+// Only this one needs protection
+router.post("/logout", verifyJWT, logoutUser);
+router.post("/refresh-token", refreshAccessToken);
+
 router.post(
     "/register",
     upload.single("avatar"),
     wrapValidator(registerUserValidator),
-    asyncHandler(registerUser)
+    registerUser
 );
 
-router.post(
-    "/login",
-    wrapValidator(loginUserValidator),
-    asyncHandler(loginUser)
-);
-router.post("/logout", verifyJWT, asyncHandler(logoutUser));
+router.use(authRateLimiter);
 
-router.post("/refresh-token", asyncHandler(refreshAccessToken));
+router.post("/login", wrapValidator(loginUserValidator), loginUser);
+
+// Email Verification
+router.post("/verify-email", verifyEmailOTP);
+router.post("/resend-verification", resendVerificationEmail);
+
+// Password Reset
+router.post("/forgot-password", initiatePasswordReset);
+router.post("/reset-password", resetPassword);
 
 export default router;

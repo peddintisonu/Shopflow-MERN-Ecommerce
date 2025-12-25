@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth.js"; 
+import useAuth from "../hooks/useAuth.js";
 
 const Header = () => {
-    const { isAuthenticated, user, logout } = useAuth();
+    const { isAuthenticated, logout, user } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -11,14 +11,14 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
-            <Link to="/" className="text-xl font-bold">
-                Shopflow
-            </Link>
-            <nav>
-                <ul className="flex space-x-4 items-center">
+        <header className="bg-gray-800 p-4 shadow-md">
+            <nav className="container mx-auto flex justify-between items-center">
+                <Link to="/" className="text-2xl font-bold text-orange-500">
+                    Shopflow
+                </Link>
+                <ul className="flex items-center gap-6">
                     <li>
-                        <Link to="/" className="hover:text-gray-300">
+                        <Link to="/" className="hover:text-orange-400">
                             Home
                         </Link>
                     </li>
@@ -27,18 +27,26 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/profile"
-                                    className="hover:text-gray-300"
+                                    className="hover:text-orange-400"
                                 >
-                                    {user?.username || "Profile"}
+                                    Profile
                                 </Link>
                             </li>
                             <li>
                                 <button
                                     onClick={handleLogout}
-                                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded"
+                                    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
                                 >
                                     Logout
                                 </button>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <img
+                                    src={user?.avatar}
+                                    alt="avatar"
+                                    className="w-8 h-8 rounded-full object-cover"
+                                />
+                                <span>{user?.username}</span>
                             </li>
                         </>
                     ) : (
@@ -46,7 +54,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/signin"
-                                    className="hover:text-gray-300"
+                                    className="hover:text-orange-400"
                                 >
                                     Sign In
                                 </Link>
@@ -54,7 +62,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/signup"
-                                    className="hover:text-gray-300"
+                                    className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded"
                                 >
                                     Sign Up
                                 </Link>

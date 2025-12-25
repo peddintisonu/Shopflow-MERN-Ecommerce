@@ -37,17 +37,15 @@ export const generateAccessToken = (payload) => {
     }
 };
 
-export const generateRandomToken = () => {
-    // Generates a 20-byte random hex string (e.g., for email links)
-    const unHashedToken = crypto.randomBytes(20).toString("hex");
+export const generateOTP = () => {
+    // Generate a random integer between 100000 and 999999
+    return crypto.randomInt(100000, 999999).toString();
+};
 
-    // We hash the token before saving to DB (Security best practice)
-    // So if DB is hacked, they can't create fake reset links
+export const hashRandomToken = (unHashedToken) => {
     const hashedToken = crypto
         .createHash("sha256")
         .update(unHashedToken)
         .digest("hex");
-
-    // Return both (One to send to user, One to save to DB)
-    return { unHashedToken, hashedToken };
+    return hashedToken;
 };

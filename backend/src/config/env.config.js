@@ -23,7 +23,9 @@ export const ENV = {
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:5173",
     FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
-    BREVO_API_KEY: process.env.BREVO_API_KEY,
+    MAIL_SERVICE: process.env.MAIL_SERVICE,
+    MAIL_USER: process.env.MAIL_USER,
+    MAIL_PASS: process.env.MAIL_PASS,
 };
 
 if (!ENV.MONGO_URI) {

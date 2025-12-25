@@ -1,13 +1,19 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import mongoose from "mongoose";
 
-import { DEFAULT_USER_AVATAR } from "../constants.js";
+import {
+    AVAILABLE_USER_ROLES,
+    DEFAULT_USER_AVATAR,
+    EMAIL_VERIFICATION_OTP_EXPIRY_MS,
+    FORGOT_PASSWORD_OTP_EXPIRY_MS,
+} from "../constants.js";
 import {
     comparePassword,
     generateAccessToken,
-    generateRandomToken,
+    generateOTP,
     generateRefreshToken,
     hashPassword,
+    hashRandomToken,
 } from "../utils/security.js";
 
 const addressSchema = new mongoose.Schema({
@@ -82,7 +88,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["USER", "ADMIN"],
+            enum: AVAILABLE_USER_ROLES,
             default: "USER",
         },
         avatar: {
@@ -100,12 +106,15 @@ const userSchema = new mongoose.Schema(
         refreshToken: { type: String },
 
         // Security & Lifecycle
-        forgotPasswordToken: { type: String },
+        forgotPasswordOtp: { type: String },
         forgotPasswordExpiry: { type: Date },
-        emailVerificationToken: { type: String },
+
+        emailVerificationOtp: { type: String },
         emailVerificationExpiry: { type: Date },
         isActive: { type: Boolean, default: true },
         lastLogin: { type: Date },
+
+        deletedAt: { type: Date, default: null },
     },
     { timestamps: true }
 );
@@ -142,11 +151,21 @@ userSchema.methods.generateRefreshToken = function () {
     return generateRefreshToken({ _id: this._id });
 };
 
-userSchema.methods.generateResetToken = function () {
-    const { unHashedToken, hashedToken } = generateRandomToken();
-    this.forgotPasswordToken = hashedToken;
-    this.forgotPasswordExpiry = Date.now() + 20 * 60 * 1000; // 20 mins
-    return unHashedToken;
+userSchema.methods.generatePasswordResetOtp = function () {
+    const unhashedOtp = generateOTP();
+    const hashedToken = hashRandomToken(unhashedOtp);
+    this.forgotPasswordOtp = hashedToken;
+    this.forgotPasswordExpiry = Date.now() + FORGOT_PASSWORD_OTP_EXPIRY_MS; // 20 mins
+    return unhashedOtp;
+};
+
+userSchema.methods.generateEmailVerificationOtp = function () {
+    const unhashedOtp = generateOTP();
+    const hashedToken = hashRandomToken(unhashedOtp);
+    this.emailVerificationOtp = hashedToken;
+    this.emailVerificationExpiry =
+        Date.now() + EMAIL_VERIFICATION_OTP_EXPIRY_MS; // 24 hours
+    return unhashedOtp;
 };
 
 export const User = mongoose.model("User", userSchema);

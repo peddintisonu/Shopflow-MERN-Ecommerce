@@ -29,6 +29,14 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             );
         }
 
+        // Check if user is active
+        if (!user.isActive) {
+            throw new ApiError(
+                403,
+                "Access Denied: User account is deactivated"
+            );
+        }
+
         req.user = user;
         next();
     } catch (error) {

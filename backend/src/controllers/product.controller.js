@@ -5,9 +5,10 @@ import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 // ADMIN CONTROLLERS
-export const createProduct = async (req, res) => {
+export const createProduct = asyncHandler(async (req, res) => {
     let {
         name,
         description,
@@ -141,9 +142,9 @@ export const createProduct = async (req, res) => {
     res.status(201).json(
         new ApiResponse(201, "Product created successfully", newProduct)
     );
-};
+});
 
-export const updateProduct = async (req, res) => {
+export const updateProduct = asyncHandler(async (req, res) => {
     const { productId } = req.params;
 
     // 1. Find the product first
@@ -269,9 +270,9 @@ export const updateProduct = async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, "Product updated successfully", product));
-};
+});
 
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = asyncHandler(async (req, res) => {
     const { productId } = req.params;
 
     const deletedProduct = await Product.findByIdAndDelete(productId);
@@ -283,10 +284,10 @@ export const deleteProduct = async (req, res) => {
     res.status(200).json(
         new ApiResponse(200, "Product deleted successfully", deletedProduct)
     );
-};
+});
 
 // PUBLIC CONTROLLERS
-export const getAllProducts = async (req, res) => {
+export const getAllProducts = asyncHandler(async (req, res) => {
     // 1. Extract Query Params
     const { page = 1, limit = 10, query, category } = req.query;
 
@@ -343,9 +344,9 @@ export const getAllProducts = async (req, res) => {
                 responseData
             )
         );
-};
+});
 
-export const getProductById = async (req, res) => {
+export const getProductById = asyncHandler(async (req, res) => {
     const { productId } = req.params;
 
     const product = await Product.findById(productId)
@@ -359,4 +360,4 @@ export const getProductById = async (req, res) => {
     res.status(200).json(
         new ApiResponse(200, "Product retrieved successfully", product)
     );
-};
+});
